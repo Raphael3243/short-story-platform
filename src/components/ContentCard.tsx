@@ -1,6 +1,4 @@
-'use client';
-
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, Eye, Star, ImageIcon, Scroll } from 'lucide-react';
 import type { Content } from '@/lib/types';
@@ -26,7 +24,7 @@ export function ContentCard({ content, featured = false }: ContentCardProps) {
   const TypeIcon = typeIcons[content.type];
 
   return (
-    <Link href={`/read/${content.slug}`} className="group block">
+    <Link to={`/read/${content.slug}`} className="group block">
       <article
         className={`relative overflow-hidden rounded-xl border border-border/50 bg-card transition-all duration-300 hover:border-primary/50 hover:glow-primary ${
           featured ? 'aspect-[3/4]' : 'aspect-[2/3]'

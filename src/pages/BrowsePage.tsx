@@ -1,8 +1,5 @@
-'use client';
-
 import React from "react"
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ContentCard } from '@/components/ContentCard';
@@ -28,12 +25,8 @@ const sortOptions = [
   { value: 'title', label: 'A-Z' },
 ];
 
-function Loading() {
-  return null;
-}
-
 export default function BrowsePage() {
-  const searchParams = useSearchParams();
+  const [searchParams] = useSearchParams();
   const initialType = searchParams.get('type') as ContentType | null;
 
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -247,5 +240,3 @@ export default function BrowsePage() {
     </div>
   );
 }
-
-export { Loading };

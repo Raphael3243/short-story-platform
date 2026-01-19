@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Youtube } from 'lucide-react';
 
 const footerLinks = {
@@ -34,7 +34,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <img
                 src="/images/logo.png"
                 alt="Blue Veil Studios"
@@ -68,7 +68,7 @@ export function Footer() {
                 {footerLinks.explore.map((link) => (
                   <li key={link.name}>
                     <Link
-                      href={link.href}
+                      to={link.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.name}
@@ -83,7 +83,7 @@ export function Footer() {
                 {footerLinks.company.map((link) => (
                   <li key={link.name}>
                     <Link
-                      href={link.href}
+                      to={link.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.name}
@@ -98,7 +98,7 @@ export function Footer() {
                 {footerLinks.legal.map((link) => (
                   <li key={link.name}>
                     <Link
-                      href={link.href}
+                      to={link.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.name}

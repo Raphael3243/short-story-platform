@@ -1,8 +1,5 @@
-'use client';
-
-import { useState, useEffect, use } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { getContentBySlug } from '@/lib/data';
 import { 
@@ -18,15 +15,11 @@ import {
   BookOpen
 } from 'lucide-react';
 
-interface PageProps {
-  params: Promise<{ slug: string; chapter: string }>;
-}
-
-export default function ReaderPage({ params }: PageProps) {
-  const { slug, chapter: chapterNum } = use(params);
-  const router = useRouter();
-  const content = getContentBySlug(slug);
-  const chapterIndex = parseInt(chapterNum, 10) - 1;
+export default function ReaderPage() {
+  const { slug, chapter: chapterNum } = useParams<{ slug: string; chapter: string }>();
+  const navigate = useNavigate();
+  const content = slug ? getContentBySlug(slug) : undefined;
+  const chapterIndex = chapterNum ? parseInt(chapterNum, 10) - 1 : 0;
 
   const [showControls, setShowControls] = useState(true);
   const [showChapterList, setShowChapterList] = useState(false);
@@ -36,7 +29,7 @@ export default function ReaderPage({ params }: PageProps) {
 
   // Hide controls after inactivity
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     const handleActivity = () => {
       setShowControls(true);
       clearTimeout(timeout);
@@ -53,28 +46,31 @@ export default function ReaderPage({ params }: PageProps) {
     };
   }, []);
 
+  const hasPrevChapter = chapterIndex > 0;
+  const hasNextChapter = content ? chapterIndex < content.chapters.length - 1 : false;
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' && hasPrevChapter) {
-        router.push(`/read/${slug}/${chapterIndex}`);
+        navigate(`/read/${slug}/${chapterIndex}`);
       } else if (e.key === 'ArrowRight' && hasNextChapter) {
-        router.push(`/read/${slug}/${chapterIndex + 2}`);
+        navigate(`/read/${slug}/${chapterIndex + 2}`);
       } else if (e.key === 'Escape') {
-        router.push(`/read/${slug}`);
+        navigate(`/read/${slug}`);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [slug, chapterIndex, router]);
+  }, [slug, chapterIndex, navigate, hasPrevChapter, hasNextChapter]);
 
   if (!content) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground">Content not found</h1>
-          <Link href="/browse" className="mt-4 inline-block text-primary hover:underline">
+          <Link to="/browse" className="mt-4 inline-block text-primary hover:underline">
             Return to library
           </Link>
         </div>
@@ -83,15 +79,13 @@ export default function ReaderPage({ params }: PageProps) {
   }
 
   const chapter = content.chapters[chapterIndex];
-  const hasPrevChapter = chapterIndex > 0;
-  const hasNextChapter = chapterIndex < content.chapters.length - 1;
 
   if (!chapter) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground">Chapter not found</h1>
-          <Link href={`/read/${slug}`} className="mt-4 inline-block text-primary hover:underline">
+          <Link to={`/read/${slug}`} className="mt-4 inline-block text-primary hover:underline">
             Return to {content.title}
           </Link>
         </div>
@@ -112,7 +106,7 @@ export default function ReaderPage({ params }: PageProps) {
       >
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <Link href={`/read/${slug}`}>
+            <Link to={`/read/${slug}`}>
               <Button variant="ghost" size="icon">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
@@ -144,7 +138,7 @@ export default function ReaderPage({ params }: PageProps) {
                 <Settings className="h-5 w-5" />
               </Button>
             )}
-            <Link href="/">
+            <Link to="/">
               <Button variant="ghost" size="icon">
                 <Home className="h-5 w-5" />
               </Button>
@@ -214,7 +208,7 @@ export default function ReaderPage({ params }: PageProps) {
       >
         <div className="flex items-center justify-between px-4 py-3">
           {hasPrevChapter ? (
-            <Link href={`/read/${slug}/${chapterIndex}`}>
+            <Link to={`/read/${slug}/${chapterIndex}`}>
               <Button variant="outline" className="gap-2 bg-transparent">
                 <ChevronLeft className="h-4 w-4" />
                 <span className="hidden sm:inline">Previous</span>
@@ -232,7 +226,7 @@ export default function ReaderPage({ params }: PageProps) {
           </div>
 
           {hasNextChapter ? (
-            <Link href={`/read/${slug}/${chapterIndex + 2}`}>
+            <Link to={`/read/${slug}/${chapterIndex + 2}`}>
               <Button variant="outline" className="gap-2 bg-transparent">
                 <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="h-4 w-4" />
@@ -265,7 +259,7 @@ export default function ReaderPage({ params }: PageProps) {
               {content.chapters.map((ch) => (
                 <Link
                   key={ch.id}
-                  href={`/read/${slug}/${ch.number}`}
+                  to={`/read/${slug}/${ch.number}`}
                   onClick={() => setShowChapterList(false)}
                   className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                     ch.number === chapter.number

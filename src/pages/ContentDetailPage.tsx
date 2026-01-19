@@ -1,10 +1,9 @@
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { getContentBySlug, mockContent } from '@/lib/data';
+import { getContentBySlug } from '@/lib/data';
 import { 
   ArrowLeft, 
   BookOpen, 
@@ -31,22 +30,12 @@ const typeLabels = {
   webtoon: 'Webtoon',
 };
 
-export function generateStaticParams() {
-  return mockContent.map((content) => ({
-    slug: content.slug,
-  }));
-}
-
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
-
-export default async function ContentDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const content = getContentBySlug(slug);
+export default function ContentDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const content = slug ? getContentBySlug(slug) : undefined;
 
   if (!content) {
-    notFound();
+    return <Navigate to="/404" replace />;
   }
 
   const TypeIcon = typeIcons[content.type];
@@ -74,7 +63,7 @@ export default async function ContentDetailPage({ params }: PageProps) {
 
           <div className="relative mx-auto max-w-7xl px-4 py-12 lg:px-8">
             {/* Back Button */}
-            <Link href="/browse" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8">
+            <Link to="/browse" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Library
             </Link>
@@ -158,7 +147,7 @@ export default async function ContentDetailPage({ params }: PageProps) {
                   {content.genres.map((genre) => (
                     <Link
                       key={genre}
-                      href={`/browse?genre=${genre}`}
+                      to={`/browse?genre=${genre}`}
                       className="rounded-full px-3 py-1 text-sm capitalize bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
                     >
                       {genre}
@@ -177,7 +166,7 @@ export default async function ContentDetailPage({ params }: PageProps) {
                 {/* CTA */}
                 <div className="mt-8 flex flex-wrap gap-4">
                   {content.chapters.length > 0 && (
-                    <Link href={`/read/${content.slug}/1`}>
+                    <Link to={`/read/${content.slug}/1`}>
                       <Button size="lg" className="glow-primary">
                         <Play className="h-4 w-4 mr-2" />
                         Start Reading
@@ -201,7 +190,7 @@ export default async function ContentDetailPage({ params }: PageProps) {
               {content.chapters.map((chapter) => (
                 <Link
                   key={chapter.id}
-                  href={`/read/${content.slug}/${chapter.number}`}
+                  to={`/read/${content.slug}/${chapter.number}`}
                   className="flex items-center justify-between p-4 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:bg-secondary/50 transition-all group"
                 >
                   <div className="flex items-center gap-4">

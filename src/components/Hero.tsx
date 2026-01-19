@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -34,13 +34,13 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/browse">
+          <Link to="/browse">
             <Button size="lg" className="glow-primary group">
               Start Reading
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Link href="/browse?type=story">
+          <Link to="/browse?type=story">
             <Button size="lg" variant="outline" className="border-primary/50 hover:bg-primary/10 bg-transparent">
               Explore Stories
             </Button>

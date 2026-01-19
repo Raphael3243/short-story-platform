@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { ContentCard } from '@/components/ContentCard';
@@ -58,7 +58,7 @@ export default function HomePage() {
               {categories.map((category) => (
                 <Link
                   key={category.name}
-                  href={category.href}
+                  to={category.href}
                   className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-8 transition-all duration-300 hover:border-primary/50 hover:glow-primary"
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
@@ -93,7 +93,7 @@ export default function HomePage() {
                   Featured Works
                 </h2>
               </div>
-              <Link href="/browse">
+              <Link to="/browse">
                 <Button variant="ghost" className="group">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -119,7 +119,7 @@ export default function HomePage() {
                   Latest Updates
                 </h2>
               </div>
-              <Link href="/browse">
+              <Link to="/browse">
                 <Button variant="ghost" className="group">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -145,7 +145,7 @@ export default function HomePage() {
                   Popular Now
                 </h2>
               </div>
-              <Link href="/browse">
+              <Link to="/browse">
                 <Button variant="ghost" className="group">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -177,7 +177,7 @@ export default function HomePage() {
               New content added every week.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href="/browse">
+              <Link to="/browse">
                 <Button size="lg" className="glow-primary">
                   Browse Library
                   <ArrowRight className="ml-2 h-4 w-4" />
